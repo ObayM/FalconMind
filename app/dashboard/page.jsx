@@ -12,20 +12,20 @@ const ProgressTracker = ({ current, total }) => {
       <div className="relative pt-1">
         <div className="flex mb-2 items-center justify-between">
           <div>
-            <span className="text-sm font-semibold inline-block py-1 px-2 uppercase rounded-full text-teal-600 bg-teal-200 dark:text-teal-300 dark:bg-teal-900">
+            <span className="text-sm font-semibold inline-block py-1 px-2 uppercase rounded-full text-indigo-600 bg-indigo-200 dark:text-indigo-300 dark:bg-indigo-900">
               Progress
             </span>
           </div>
           <div className="text-right">
-            <span className="text-sm font-semibold inline-block text-teal-600 dark:text-teal-300">
+            <span className="text-sm font-semibold inline-block text-indigo-600 dark:text-indigo-300">
               {percentage.toFixed(0)}%
             </span>
           </div>
         </div>
-        <div className="overflow-hidden h-3 mb-4 text-xs flex rounded bg-teal-200 dark:bg-teal-700">
+        <div className="overflow-hidden h-3 mb-4 text-xs flex rounded bg-indigo-200 dark:bg-indigo-700">
           <div 
             style={{ width: `${percentage}%` }}
-            className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-teal-500 dark:bg-teal-300 transition-all duration-500 ease-in-out"
+            className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-indigo-500 dark:bg-indigo-300 transition-all duration-500 ease-in-out"
           ></div>
         </div>
       </div>
@@ -82,7 +82,7 @@ const Dashboard = () => {
   return (
     <div style={{minHeight: 'calc(100vh - 64px)'}} className="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-white p-6">
       <main className="max-w-7xl mx-auto">
-        <h1 className="text-4xl font-bold mb-8 text-teal-600 dark:text-teal-300">Dashboard</h1>
+        <h1 className="text-4xl font-bold mb-8 text-indigo-600 dark:text-indigo-300">Dashboard</h1>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
           <div>
@@ -100,7 +100,7 @@ const Dashboard = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {stats.map((stat, index) => (
               <div key={index} className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md flex items-center">
-                <stat.icon className="text-3xl mr-4 text-teal-500 dark:text-teal-300" />
+                <stat.icon className="text-3xl mr-4 text-indigo-500 dark:text-indigo-300" />
                 <div>
                   <h3 className="text-lg font-medium mb-1 text-gray-700 dark:text-gray-300">{stat.label}</h3>
                   <p className="text-2xl font-bold text-gray-900 dark:text-white">{stat.value}</p>
@@ -117,9 +117,9 @@ const Dashboard = () => {
               <Link
                 key={index}
                 href={button.href}
-                className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md flex flex-col items-center justify-center transition-all duration-300 hover:bg-teal-50 dark:hover:bg-teal-900 hover:transform hover:scale-105"
+                className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md flex flex-col items-center justify-center transition-all duration-300 hover:bg-indigo-50 dark:hover:bg-indigo-900 hover:transform hover:scale-105"
               >
-                <button.icon className="text-4xl mb-3 text-teal-500 dark:text-teal-300" />
+                <button.icon className="text-4xl mb-3 text-indigo-500 dark:text-indigo-300" />
                 <span className="text-lg font-medium text-gray-800 dark:text-gray-200">{button.label}</span>
               </Link>
             ))}
