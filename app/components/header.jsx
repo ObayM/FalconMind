@@ -19,11 +19,7 @@ const Navbar = () => {
   const toggleToolsDropdown = () => setIsToolsDropdownOpen(!isToolsDropdownOpen);
   const toggleToolsDropdownMobile = () => setIsToolsDropdownOpenMobli(!isToolsDropdownOpenMobil);
   const toggleProfileDropdown = () => setIsProfileDropdownOpen(!isProfileDropdownOpen);
-  const print = () => {
-    console.log(isToolsDropdownOpen);
-    toggleToolsDropdownMobile()
-    console.log(isToolsDropdownOpen);
-  }
+
   const closeAllDropdowns = () => {
     setIsToolsDropdownOpen(false);
     setIsProfileDropdownOpen(false);
@@ -83,7 +79,7 @@ const Navbar = () => {
               <span className="text-indigo-600 dark:text-indigo-400 text-xl font-bold">FalconMind</span>
             </Link>
             <div className="hidden md:ml-6 md:flex md:space-x-8">
-              <Link href="/" className="text-gray-900 dark:text-white hover:text-indigo-600 dark:hover:text-indigo-400 px-3 py-2 rounded-md text-sm font-medium">
+              <Link href="/dashboard" className="text-gray-900 dark:text-white hover:text-indigo-600 dark:hover:text-indigo-400 px-3 py-2 rounded-md text-sm font-medium">
                 Home
               </Link>
               <div className="relative dropdown-container">
