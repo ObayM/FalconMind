@@ -1,6 +1,6 @@
 'use client'
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { FiUser, FiMail, FiBriefcase, FiMapPin, FiEdit2, FiLock, FiSave, FiX } from 'react-icons/fi';
+import { FiUser, FiMail, FiBriefcase, FiMapPin, FiEdit2, FiLock, FiSave } from 'react-icons/fi';
 
 // Simulated API functions
 const fetchUserProfile = async () => {
@@ -34,12 +34,8 @@ const useField = (initialValue, isEditable = true) => {
   const onChange = useCallback((e) => setValue(e.target.value), []);
   const onEdit = useCallback(() => setIsEditing(true), []);
   const onSave = useCallback(() => setIsEditing(false), []);
-  const onCancel = useCallback(() => {
-    setValue(initialValue);
-    setIsEditing(false);
-  }, [initialValue]);
 
-  return { value, isEditing, onChange, onEdit, onSave, onCancel, isEditable };
+  return { value, isEditing, onChange, onEdit, onSave, isEditable };
 };
 
 const InputField = React.memo(({ icon: Icon, label, name, type, placeholder, field }) => {
@@ -79,12 +75,7 @@ const InputField = React.memo(({ icon: Icon, label, name, type, placeholder, fie
               >
                 <FiSave className="h-4 w-4" />
               </button>
-              <button
-                onClick={field.onCancel}
-                className="p-1 bg-red-100 text-red-600 hover:bg-red-200 hover:text-red-700 rounded-full transition-colors duration-200"
-              >
-                <FiX className="h-4 w-4" />
-              </button>
+              
             </div>
           </div>
         ) : (
@@ -191,12 +182,7 @@ const ProfilePage = () => {
                       >
                         <FiSave className="h-4 w-4" />
                       </button>
-                      <button
-                        onClick={bioField.onCancel}
-                        className="p-1 bg-red-100 text-red-600 hover:bg-red-200 hover:text-red-700 rounded-full transition-colors duration-200"
-                      >
-                        <FiX className="h-4 w-4" />
-                      </button>
+                      
                     </div>
                   </div>
                 ) : (
