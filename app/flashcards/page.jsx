@@ -5,15 +5,16 @@ import { motion, AnimatePresence } from "framer-motion";
 
 export default function Flashcards() {
     const flashcards = [
-        {name : 'name', description : 'description'},
-        {name : 'ds', description : 'description'},
-        {name : 'sds', description : 'description'},
+        {name : '1st one', description : 'description1', flashcards: [{front: "hi1", back: "hello1"},{front: "hi11", back: "hello11"}]},
+        {name : '2nd one', description : 'description2', flashcards: [{front: "hi2", back: "hello2"},{front: "hi22", back: "hello22"}]},
+        {name : '3rd one', description : 'description3', flashcards: [{front: "hi3", back: "hello3"},{front: "hi33", back: "hello33"}]},
     
     ]
 
-    const handleCardClick = () => {
-        console.log("hellow ")
-    }
+    const handleCardClick = (id) => {
+        router.push(`/deck?id=${id}`);
+    };
+
 
 
     return (
