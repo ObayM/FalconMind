@@ -133,7 +133,7 @@ const ProfilePage = () => {
   if (!profile) return <div>Loading...</div>;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-gray-800 dark:to-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-[calc(100vh-64px)] bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-gray-800 dark:to-gray-900 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto bg-white dark:bg-gray-800 shadow-lg rounded-xl overflow-hidden">
         <div className="px-6 py-8 sm:px-8">
           <div className="flex justify-between items-center mb-6">
