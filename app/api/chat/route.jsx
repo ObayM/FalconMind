@@ -1,10 +1,8 @@
 import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from "@google/generative-ai";
-import formidable from 'formidable';
-import fs from 'fs';
-import path from 'path';
+
 
 const API_KEY = process.env.GEMINI_API_KEY;
-const MODEL_NAME = "gemini-1.5-flash";
+const MODEL_NAME = "gemini-1.5-pro-exp-0827";
 
 const generationConfig = {
   temperature: 0.9,
