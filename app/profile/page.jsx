@@ -106,7 +106,7 @@ const ProfilePage = () => {
   const [profile, setProfile] = useState(null);
   const nameField = useField("");
   const emailField = useField("", false);
-  const skillField = useField("", false); // Set isEditable to false for skill field
+  const skillField = useField("", false); 
   const locationField = useField("");
   const bioField = useField("");
 
