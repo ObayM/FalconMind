@@ -37,6 +37,7 @@ const SignUpForm = () => {
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
+    skill: '',
     password: '',
     confirmPassword: '',
   });
@@ -134,6 +135,23 @@ const SignUpForm = () => {
                          text-gray-900 dark:text-white
                          focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400"
               placeholder="you@example.com"
+            />
+          </div>
+          <div>
+            <label htmlFor="skill" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Skill
+            </label>
+            <input
+              id="skill"
+              name="skill"
+              type="skill"
+              required
+              value={formData.skill}
+              onChange={handleInputChange}
+              className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md text-sm
+                         text-gray-900 dark:text-white
+                         focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400"
+              placeholder="Python"
             />
           </div>
           
