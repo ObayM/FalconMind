@@ -1,50 +1,159 @@
+'use client'
 import { notFound } from 'next/navigation';
+import ReactMarkdown from 'react-markdown';
+import { FaBook, FaVideo, FaCode, FaBars, FaTimes } from 'react-icons/fa';
+import Link from 'next/link';
+import { useState, useEffect } from 'react';
 
 const mockConcepts = {
   'python-fundamentals-syntax-and-variables': {
     title: 'Syntax and Variables In Python',
-    content: `Syntax and Variables in Python
+    content: `
 
-    Python is a high-level programming language renowned for its simplicity and readability. Understanding its syntax and variables is fundamental for anyone starting out with Python.
-    
-    **Syntax in Python**
-    
-    Syntax refers to the set of rules that define the combinations of symbols considered to be correctly structured programs in Python. The language’s syntax is designed to be intuitive, making it easier for beginners to learn. 
-    
-    Python uses indentation to define the structure of the code. Unlike many other programming languages that use braces or keywords, Python uses white space to delimit blocks of code. For example, in a function definition or a conditional statement, the body of the code is indented. This makes Python visually clear and easy to follow.
-    
-    Another important aspect of Python syntax is its use of colons to indicate the beginning of an indented block. For example, after a function definition or an if statement, a colon is used before the indented code block.
-    
-    **Variables in Python**
-    
-    Variables are used to store data that can be referenced and manipulated throughout a program. In Python, variables are created when you assign a value to them. There is no need to declare a variable before assigning it a value, which is a feature that simplifies coding in Python.
-    
-    To assign a value to a variable, you use the equals sign (\`=\`). For example, \`x = 5\` assigns the value 5 to the variable \`x\`. Variables do not need explicit type declaration because Python is dynamically typed; the type of a variable is inferred from the value assigned to it.
-    
-    Python supports various types of variables, including integers, floating-point numbers, strings, and lists. Each type of variable can be used to store different kinds of data. For example, \`name = "Alice"\` assigns a string value to the variable \`name\`, while \`age = 30\` assigns an integer value to the variable \`age\`.
-    
-    In summary, Python’s syntax is designed for readability and simplicity, using indentation and colons to structure code. Variables in Python are dynamically typed, allowing for flexible and intuitive coding. Understanding these basics is crucial for anyone looking to write effective Python code.`
+
+Python is a high-level programming language renowned for its simplicity and readability. Understanding its syntax and variables is fundamental for anyone starting out with Python.
+
+## Basic Syntax
+
+Python uses indentation to define code blocks. Here's a simple example:
+
+\`\`\`python
+if True:
+    print("This is indented")
+print("This is not indented")
+\`\`\`
+
+## Variables
+
+Variables in Python are created when you assign a value to them:
+
+\`\`\`python
+x = 5
+y = "Hello, World!"
+\`\`\`
+
+Python is dynamically typed, which means you don't need to declare the type of a variable.
+    `,
   },
   'python-fundamentals-data-types': {
     title: 'Data Types In Python',
-    content: `Python supports several data types, including integers (int), floating-point numbers (float), strings (str), and lists (list). Each type serves a different purpose: integers for whole numbers, floats for decimals, strings for text, and lists for ordered collections. Python's dynamic typing system means variables can change types as needed.`
-  },
+    content: `
 
+Python supports several data types, including integers (int), floating-point numbers (float), strings (str), and lists (list).
+
+## Integers
+
+\`\`\`python
+x = 5
+\`\`\`
+
+## Floats
+
+\`\`\`python
+y = 3.14
+\`\`\`
+
+## Strings
+
+\`\`\`python
+name = "Alice"
+\`\`\`
+
+## Lists
+
+\`\`\`python
+fruits = ["apple", "banana", "cherry"]
+\`\`\`
+
+Each type serves a different purpose: integers for whole numbers, floats for decimals, strings for text, and lists for ordered collections. Python's dynamic typing system means variables can change types as needed.
+    `,
+  },
 };
+
+
+// ... (keep the mockConcepts object as is)
+
+const Sidebar = ({ isOpen, setIsOpen }) => (
+  <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-gray-800 text-white p-6 transform transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 lg:static`}>
+    <button className="lg:hidden absolute top-4 right-4 text-white" onClick={() => setIsOpen(false)}>
+      <FaTimes size={24} />
+    </button>
+    <h2 className="text-xl font-bold mb-6">Resources</h2>
+    <nav className="space-y-4">
+      <Link href="#" className="flex items-center space-x-3 hover:text-blue-400 transition-colors">
+        <FaBook size={20} />
+        <span>Documentation</span>
+      </Link>
+      <Link href="#" className="flex items-center space-x-3 hover:text-blue-400 transition-colors">
+        <FaVideo size={20} />
+        <span>Video Tutorials</span>
+      </Link>
+      <Link href="#" className="flex items-center space-x-3 hover:text-blue-400 transition-colors">
+        <FaCode size={20} />
+        <span>Code Examples</span>
+      </Link>
+    </nav>
+  </div>
+);
+
+const RelatedTopics = ({ concepts }) => (
+  <div className="mt-8 lg:mt-0 lg:ml-8 lg:w-64">
+    <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">Related Topics</h2>
+    <ul className="space-y-2">
+      {Object.entries(concepts).map(([key, value]) => (
+        <li key={key}>
+          <Link href={`/concept/${key}`} className="text-blue-600 dark:text-blue-400 hover:underline">
+            {value.title}
+          </Link>
+        </li>
+      ))}
+    </ul>
+  </div>
+);
 
 export default function ConceptPage({ params }) {
   const { article } = params;
   const concept = mockConcepts[article];
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => setIsSidebarOpen(window.innerWidth >= 1024);
+    window.addEventListener('resize', handleResize);
+    handleResize();
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   if (!concept) {
     notFound();
   }
 
   return (
-    <div className="container mx-auto px-4 py-12 bg-gray-100 dark:bg-gray-900 min-h-screen">
-      <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-6">{concept.title}</h1>
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
-        <p className="text-gray-700 dark:text-gray-300">{concept.content}</p>
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
+      <header className="bg-white dark:bg-gray-800 shadow-md py-4 px-6 lg:hidden">
+        <button onClick={() => setIsSidebarOpen(true)} className="text-gray-600 dark:text-gray-300">
+          <FaBars size={24} />
+        </button>
+      </header>
+      <div className="flex">
+        <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
+        <main className="flex-grow p-6 lg:p-8">
+          <div className="max-w-4xl mx-auto">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
+              <div className="p-6 md:p-8">
+                <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-6">{concept.title}</h1>
+                <div className="prose dark:prose-invert max-w-none">
+                  <ReactMarkdown>{concept.content}</ReactMarkdown>
+                </div>
+              </div>
+            </div>
+            <div className="lg:hidden mt-8">
+              <RelatedTopics concepts={mockConcepts} />
+            </div>
+          </div>
+        </main>
+        <div className="hidden lg:block">
+          <RelatedTopics concepts={mockConcepts} />
+        </div>
       </div>
     </div>
   );

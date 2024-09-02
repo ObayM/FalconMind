@@ -1,3 +1,19 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.prose {
+    @apply text-gray-800 dark:text-gray-200;
+  }
+
+  .prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
+    @apply text-gray-900 dark:text-gray-100;
+  }
+
+  .prose code {
+    @apply bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded px-1;
+  }
+
+  .prose pre {
+    @apply bg-gray-100 dark:bg-gray-700 p-4 rounded-lg overflow-x-auto;
+  }
