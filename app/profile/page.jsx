@@ -101,6 +101,7 @@ const InputField = React.memo(({ icon: Icon, label, name, type, placeholder, fie
     </div>
   );
 });
+InputField.displayName = 'InputField';
 
 const ProfilePage = () => {
   const [profile, setProfile] = useState(null);

@@ -186,7 +186,7 @@ const QuoteSection = () => {
         <h3 className="text-xl font-semibold text-gray-800 dark:text-white">Quote of the Moment</h3>
       </div>
       <blockquote className="text-lg italic text-gray-700 dark:text-gray-300 mb-4">
-        "{quote.text}"
+      &quot;{quote.text}&quot;
       </blockquote>
       <p className="text-right text-gray-600 dark:text-gray-400">- {quote.author}</p>
     </div>
