@@ -130,7 +130,14 @@ const ProfilePage = () => {
     }
   }, []);
 
-  if (!profile) return <div>Loading...</div>;
+  if (!profile) {
+      return (
+        <div className="min-h-[calc(100vh-64px)] flex items-center justify-center bg-gray-100 dark:bg-gray-900">
+          <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-indigo-500"></div>
+        </div>
+      );
+    }
+  
 
   return (
     <div className="min-h-[calc(100vh-64px)] bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-gray-800 dark:to-gray-900 py-12 px-4 sm:px-6 lg:px-8">
