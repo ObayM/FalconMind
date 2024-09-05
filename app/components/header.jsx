@@ -1,19 +1,20 @@
 'use client'
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { FaBars, FaTimes, FaUserCircle, FaCaretDown } from 'react-icons/fa';
+import { FaBars, FaTimes, FaCaretDown } from 'react-icons/fa';
 import ThemeSwitch from "./ThemeSwitch";
+import { useAuth, useClerk } from '@clerk/nextjs';
+import { useUser } from '@clerk/nextjs';
+
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isToolsDropdownOpen, setIsToolsDropdownOpen] = useState(false);
   const [isToolsDropdownOpenMobil, setIsToolsDropdownOpenMobli] = useState(false);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { isSignedIn } = useAuth();
+  const { user } = useUser();
 
-  useEffect(() => {
-    setIsLoggedIn(true); // Set to true if the user is authenticated
-  }, []);
 
   const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
   const toggleToolsDropdown = () => setIsToolsDropdownOpen(!isToolsDropdownOpen);
@@ -39,7 +40,7 @@ const Navbar = () => {
   }, []);
 
   const renderAuthSection = () => {
-    if (isLoggedIn) {
+    if (isSignedIn) {
       return (
         <>
           <button
@@ -50,12 +51,15 @@ const Navbar = () => {
             aria-haspopup="true"
           >
             <span className="sr-only">Open user menu</span>
-            <FaUserCircle className="h-8 w-8 rounded-full text-gray-400" />
+            <img
+              className="h-8 w-8 rounded-full"
+              src={user.imageUrl}
+              alt={user.fullName}
+            />
           </button>
           {isProfileDropdownOpen && (
             <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white dark:bg-gray-700 ring-1 ring-black ring-opacity-5 focus:outline-none top-16">
               <Link href="/profile" className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600">Your Profile</Link>
-              <Link href="#" className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600">Sign out</Link>
             </div>
           )}
         </>
@@ -75,7 +79,7 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
-            <Link href="/" className="flex-shrink-0">
+            <Link href="/dashboard" className="flex-shrink-0">
               <span className="text-indigo-600 dark:text-indigo-400 text-xl font-bold">FalconMind</span>
             </Link>
             <div className="hidden md:ml-6 md:flex md:space-x-8">
@@ -131,7 +135,7 @@ const Navbar = () => {
       {isMobileMenuOpen && (
         <div className="md:hidden" id="mobile-menu">
           <div className="px-2 pt-2 pb-3 space-y-1">
-            <Link href="/" className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 block px-3 py-2 rounded-md text-base font-medium">Home</Link>
+            <Link href="/dashboard" className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 block px-3 py-2 rounded-md text-base font-medium">Home</Link>
             <div className="space-y-1">
               <button
                 onClick={toggleToolsDropdownMobile}
@@ -151,16 +155,19 @@ const Navbar = () => {
             </div>
           </div>
           <div className="pt-4 pb-3 border-t border-gray-200 dark:border-gray-600">
-            {isLoggedIn ? (
+            {isSignedIn ? (
               <>
                 <div className="flex items-center px-4">
                   <div className="flex-shrink-0">
-                    <FaUserCircle className="h-10 w-10 rounded-full text-gray-400" />
+                    <img
+                      className="h-10 w-10 rounded-full text-gray-400"
+                      src={user.imageUrl}
+                      alt={user.fullName}
+                    />
                   </div>
                 </div>
                 <div className="mt-3 space-y-1 px-2">
                   <Link href="/profile" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">Your Profile</Link>
-                  <Link href="#" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">Sign out</Link>
                 </div>
               </>
             ) : (

@@ -3,6 +3,8 @@ import "./globals.css";
 import { Providers } from './providers'
 import Header from "./components/header";
 import { Analytics } from "@vercel/analytics/react"
+import { ClerkProvider, SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
@@ -12,6 +14,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
+    <ClerkProvider>
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
         <Analytics />
@@ -21,5 +24,6 @@ export default function RootLayout({ children }) {
         </Providers>
         </body>
     </html>
+    </ClerkProvider>
   );
 }
