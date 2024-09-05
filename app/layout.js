@@ -1,9 +1,12 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from './providers'
-import Header from "./components/header";
+import Header from "../components/header";
 import { Analytics } from "@vercel/analytics/react"
-import { ClerkProvider, SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
+import { ClerkProvider} from '@clerk/nextjs'
+import { UserProgressProvider } from "@/components/UserProgress";
+import { LearningStatsProvider } from '@/components/LearningStats';
+
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,8 +22,15 @@ export default function RootLayout({ children }) {
       <body className={inter.className}>
         <Analytics />
         <Providers>
+        <LearningStatsProvider>
+        <UserProgressProvider>
+
           <Header />
         {children}
+        
+        </UserProgressProvider>
+        </LearningStatsProvider>
+
         </Providers>
         </body>
     </html>

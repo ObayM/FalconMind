@@ -1,11 +1,36 @@
 'use client'
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { FaBars, FaTimes, FaCaretDown } from 'react-icons/fa';
+import { FaBars, FaTimes, FaCaretDown,FaUserCircle } from 'react-icons/fa';
 import ThemeSwitch from "./ThemeSwitch";
 import { useAuth, useClerk } from '@clerk/nextjs';
 import { useUser } from '@clerk/nextjs';
 
+const UserAvatar = () => {
+  const { user } = useUser();
+  const [imageLoaded, setImageLoaded] = useState(false);
+
+  useEffect(() => {
+    if (user?.imageUrl) {
+      const img = new Image();
+      img.onload = () => setImageLoaded(true);
+      img.onerror = () => setImageLoaded(false);
+      img.src = user.imageUrl;
+    }
+  }, [user]);
+
+  if (!user || !imageLoaded) {
+    return <FaUserCircle className="h-8 w-8 rounded-full text-gray-400" />;
+  }
+
+  return (
+    <img
+      className="h-8 w-8 rounded-full"
+      src={user.imageUrl}
+      alt={user.fullName || "User avatar"}
+    />
+  );
+};
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -13,7 +38,6 @@ const Navbar = () => {
   const [isToolsDropdownOpenMobil, setIsToolsDropdownOpenMobli] = useState(false);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const { isSignedIn } = useAuth();
-  const { user } = useUser();
 
 
   const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -51,11 +75,7 @@ const Navbar = () => {
             aria-haspopup="true"
           >
             <span className="sr-only">Open user menu</span>
-            <img
-              className="h-8 w-8 rounded-full"
-              src={user.imageUrl}
-              alt={user.fullName}
-            />
+            <UserAvatar />
           </button>
           {isProfileDropdownOpen && (
             <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white dark:bg-gray-700 ring-1 ring-black ring-opacity-5 focus:outline-none top-16">
@@ -159,11 +179,7 @@ const Navbar = () => {
               <>
                 <div className="flex items-center px-4">
                   <div className="flex-shrink-0">
-                    <img
-                      className="h-10 w-10 rounded-full text-gray-400"
-                      src={user.imageUrl}
-                      alt={user.fullName}
-                    />
+                  <UserAvatar />
                   </div>
                 </div>
                 <div className="mt-3 space-y-1 px-2">

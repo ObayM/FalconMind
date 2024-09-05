@@ -3,10 +3,13 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { FaBook, FaRobot, FaFeather, FaQuoteLeft, FaComments, FaChartLine, FaTrophy, FaFireAlt, FaClock } from 'react-icons/fa';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { useUser } from '@clerk/nextjs';
+import { useProgress } from '@/components/UserProgress';
+import { useLearningStats } from '@/components/LearningStats';
+
 
 // Mock data for the dashboard
 const mockUserData = {
-  name: "Obay Rashad",
   level: 7,
   xp: 3200,
   nextLevelXp: 5000,
@@ -23,7 +26,7 @@ const mockLearningStats = [
   { day: 'Sun', minutes: 40 },
 ];
 
-const mockQuotes = [
+const Quotes = [
   { text: "The capacity to learn is a gift; the ability to learn is a skill; the willingness to learn is a choice.", author: "Brian Herbert" },
   { text: "The beautiful thing about learning is that nobody can take it away from you.", author: "B.B. King" },
   { text: "Education is the passport to the future, for tomorrow belongs to those who prepare for it today.", author: "Malcolm X" },
@@ -172,11 +175,11 @@ const UserProgress = ({ xp, nextLevelXp, level, streakDays }) => {
 };
 
 const QuoteSection = () => {
-  const [quote, setQuote] = useState(mockQuotes[0]);
+  const [quote, setQuote] = useState(Quotes[0]);
 
   useEffect(() => {
-    const randomIndex = Math.floor(Math.random() * mockQuotes.length);
-    setQuote(mockQuotes[randomIndex]);
+    const randomIndex = Math.floor(Math.random() * Quotes.length);
+    setQuote(Quotes[randomIndex]);
   }, []);
 
   return (
@@ -193,7 +196,7 @@ const QuoteSection = () => {
   );
 };
 
-const LearningStats = ({ data }) => {
+const LearningStatsComp = ({ data }) => {
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 sm:p-6">
       <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">Learning Activity</h3>
@@ -262,6 +265,10 @@ const ComingSoonAchievements = comingSoon(Achievements);
 
 const Dashboard = () => {
   const [greeting, setGreeting] = useState('');
+  const { user } = useUser();
+  const { progress, addXP } = useProgress();
+  const { learningStats, getCurrentSessionTime, getTotalMinutes } = useLearningStats();
+
 
   useEffect(() => {
     const hour = new Date().getHours();
@@ -276,7 +283,7 @@ const Dashboard = () => {
         <div className="flex flex-col sm:flex-row items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Dashboard</h1>
-            <p className="text-lg text-gray-600 dark:text-gray-300">{greeting}, {mockUserData.name}!</p>
+            <p className="text-lg text-gray-600 dark:text-gray-300">{greeting}, d!</p>
           </div>
           <Link href="/course" className="mt-4 sm:mt-0 bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded transition duration-300">
             Go to Course
@@ -285,11 +292,11 @@ const Dashboard = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2">
-            <UserProgress {...mockUserData} />
+            <UserProgress {...{level: progress.level,xp:  progress.xp,nextLevelXp: progress.nextLevelXp,streakDays:  progress.streakDays }} />
             <QuoteSection />
           </div>
           <div>
-            <LearningStats data={mockLearningStats} />
+            <LearningStatsComp data={learningStats} />
           </div>
         </div>
 
