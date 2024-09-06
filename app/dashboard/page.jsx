@@ -128,7 +128,7 @@ const comingSoon = (WrappedComponent) => {
           <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg text-center">
             <FaClock className="text-5xl text-indigo-500 mb-3 mx-auto" />
             <p className="text-xl font-bold text-gray-800 dark:text-white">Coming Soon!</p>
-            <p className="text-sm text-gray-600 dark:text-gray-300 mt-2">We're working hard to bring you this feature.</p>
+            <p className="text-sm text-gray-600 dark:text-gray-300 mt-2">We&apos;re working hard to bring you this feature.</p>
           </div>
         </motion.div>
         <div className="filter blur-sm">
