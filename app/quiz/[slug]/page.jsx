@@ -18,7 +18,7 @@ export default function QuizPage({ params }) {
   const [userAnswers, setUserAnswers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { user } = useUser();
+  const { isSignedIn, user } = useUser();
   const { progress, addXP } = useProgress();
 
   useEffect(() => {
@@ -52,7 +52,24 @@ export default function QuizPage({ params }) {
       fetchQuizAndCheckCompletion();
     }
   }, [slug, user]);
-
+  if (!isSignedIn) {
+    return (
+      <div className="min-h-[calc(100vh-64px)] flex items-center justify-center bg-gradient-to-r from-blue-500 to-indigo-600">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
+          className="text-center bg-white dark:bg-gray-800 p-8 rounded-lg shadow-2xl"
+        >
+          <h2 className="text-3xl font-bold text-gray-800 dark:text-white mb-6">Welcome to Your Learning Journey</h2>
+          <p className="text-gray-600 dark:text-gray-300 mb-8">Sign up to access your personalized dashboard and start learning today!</p>
+          <Link href="/signup" className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-3 px-6 rounded-full transition duration-300 text-lg">
+            Get Started
+          </Link>
+        </motion.div>
+      </div>
+    );
+  }
   const handleAnswerSelect = (answerIndex) => {
     if (quizCompleted) return;
     setSelectedAnswer(answerIndex);
