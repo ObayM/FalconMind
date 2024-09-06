@@ -6,25 +6,7 @@ import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'rec
 import { useUser } from '@clerk/nextjs';
 import { useProgress } from '@/components/UserProgress';
 import { useLearningStats } from '@/components/LearningStats';
-
-
-// Mock data for the dashboard
-const mockUserData = {
-  level: 7,
-  xp: 3200,
-  nextLevelXp: 5000,
-  streakDays: 12,
-};
-
-const mockLearningStats = [
-  { day: 'Mon', minutes: 45 },
-  { day: 'Tue', minutes: 60 },
-  { day: 'Wed', minutes: 30 },
-  { day: 'Thu', minutes: 75 },
-  { day: 'Fri', minutes: 50 },
-  { day: 'Sat', minutes: 90 },
-  { day: 'Sun', minutes: 40 },
-];
+import { motion } from 'framer-motion';
 
 const Quotes = [
   { text: "The capacity to learn is a gift; the ability to learn is a skill; the willingness to learn is a choice.", author: "Brian Herbert" },
@@ -128,22 +110,27 @@ const Quotes = [
 ];
 
 const quickAccessTools = [
-  { name: 'AI Flashcards', icon: FaRobot, href: '/flashcards' },
-  { name: 'Poem Generator', icon: FaFeather, href: '/poem-creator' },
-  { name: 'AI Assistant', icon: FaComments, href: '/ai-assistant' },
+  { name: 'AI Flashcards', icon: FaRobot, href: '/flashcards', color: 'bg-blue-500' },
+  { name: 'Poem Generator', icon: FaFeather, href: '/poem-creator', color: 'bg-purple-500' },
+  { name: 'AI Assistant', icon: FaComments, href: '/ai-assistant', color: 'bg-green-500' },
 ];
-
 
 const comingSoon = (WrappedComponent) => {
   return function WithComingSoon(props) {
     return (
-      <div className="relative">
-        <div className="absolute inset-0 bg-gray-900 bg-opacity-20 flex items-center justify-center z-10 rounded-lg">
-          <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-lg">
-            <FaClock className="text-4xl text-indigo-500 mb-2 mx-auto" />
-            <p className="text-lg font-semibold text-center">Coming Soon!</p>
+      <div className="relative overflow-hidden rounded-lg">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
+          className="absolute inset-0 bg-gray-900 bg-opacity-80 flex items-center justify-center z-10 rounded-lg"
+        >
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg text-center">
+            <FaClock className="text-5xl text-indigo-500 mb-3 mx-auto" />
+            <p className="text-xl font-bold text-gray-800 dark:text-white">Coming Soon!</p>
+            <p className="text-sm text-gray-600 dark:text-gray-300 mt-2">We're working hard to bring you this feature.</p>
           </div>
-        </div>
+        </motion.div>
         <div className="filter blur-sm">
           <WrappedComponent {...props} />
         </div>
@@ -156,21 +143,31 @@ const UserProgress = ({ xp, nextLevelXp, level, streakDays }) => {
   const progress = (xp / nextLevelXp) * 100;
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 sm:p-6 mb-6">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6"
+    >
       <div className="flex flex-col sm:flex-row items-center justify-between mb-4">
-        <div className="mb-2 sm:mb-0">
-          <h3 className="text-xl font-semibold text-gray-800 dark:text-white">Level {level}</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-300">{xp} / {nextLevelXp} XP</p>
+        <div className="mb-4 sm:mb-0 text-center sm:text-left">
+          <h3 className="text-2xl font-bold text-gray-800 dark:text-white">Level {level}</h3>
+          <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">{xp} / {nextLevelXp} XP</p>
         </div>
-        <div className="flex items-center">
+        <div className="flex items-center bg-orange-100 dark:bg-orange-900 rounded-full px-4 py-2">
           <FaFireAlt className="text-orange-500 mr-2" />
-          <span className="text-lg font-semibold text-gray-800 dark:text-white">{streakDays} day streak</span>
+          <span className="text-lg font-bold text-orange-800 dark:text-orange-100">{streakDays} day streak</span>
         </div>
       </div>
-      <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
-        <div className="bg-indigo-600 h-2.5 rounded-full" style={{ width: `${progress}%` }}></div>
+      <div className="w-full bg-gray-200 rounded-full h-4 dark:bg-gray-700 overflow-hidden">
+        <motion.div
+          initial={{ width: 0 }}
+          animate={{ width: `${progress}%` }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="bg-gradient-to-r from-blue-500 to-indigo-600 h-4 rounded-full"
+        />
       </div>
-    </div>
+    </motion.div>
   );
 };
 
@@ -183,23 +180,33 @@ const QuoteSection = () => {
   }, []);
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6">
+    <motion.div
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.5 }}
+      className="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg shadow-lg p-6 mb-6 text-white"
+    >
       <div className="flex items-center mb-4">
-        <FaQuoteLeft className="text-3xl text-indigo-500 mr-3" />
-        <h3 className="text-xl font-semibold text-gray-800 dark:text-white">Quote of the Moment</h3>
+        <FaQuoteLeft className="text-4xl text-indigo-200 mr-3" />
+        <h3 className="text-2xl font-bold">Quote of the Moment</h3>
       </div>
-      <blockquote className="text-lg italic text-gray-700 dark:text-gray-300 mb-4">
-      &quot;{quote.text}&quot;
+      <blockquote className="text-xl italic mb-4">
+        &quot;{quote.text}&quot;
       </blockquote>
-      <p className="text-right text-gray-600 dark:text-gray-400">- {quote.author}</p>
-    </div>
+      <p className="text-right text-indigo-200">- {quote.author}</p>
+    </motion.div>
   );
 };
 
 const LearningStatsComp = ({ data }) => {
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 sm:p-6">
-      <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">Learning Activity</h3>
+    <motion.div
+      initial={{ opacity: 0, x: 20 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.5 }}
+      className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6"
+    >
+      <h3 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">Learning Activity</h3>
       <div className="h-64">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={data}>
@@ -213,49 +220,53 @@ const LearningStatsComp = ({ data }) => {
                 color: '#F3F4F6',
               }}
             />
-            <Line type="monotone" dataKey="minutes" stroke="#3B82F6" strokeWidth={2} dot={{ fill: '#3B82F6', strokeWidth: 2 }} />
+            <Line type="monotone" dataKey="minutes" stroke="#3B82F6" strokeWidth={3} dot={{ fill: '#3B82F6', strokeWidth: 3 }} />
           </LineChart>
         </ResponsiveContainer>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
-const QuickAccessTool = ({ name, icon: Icon, href }) => {
+const QuickAccessTool = ({ name, icon: Icon, href, color }) => {
   return (
-    <Link href={href} className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 flex flex-col items-center justify-center transition-all duration-300 hover:bg-indigo-50 dark:hover:bg-indigo-900 hover:transform hover:scale-105">
-      <Icon className="text-3xl mb-2 text-indigo-500" />
-      <span className="text-sm font-medium text-center text-gray-800 dark:text-gray-200">{name}</span>
+    <Link href={href}>
+      <motion.div
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        className={`${color} rounded-lg shadow-lg p-6 flex flex-col items-center justify-center transition-all duration-300 text-white h-full`}
+      >
+        <Icon className="text-4xl mb-3" />
+        <span className="text-lg font-bold text-center">{name}</span>
+      </motion.div>
     </Link>
   );
 };
 
 const Achievements = () => {
+  const achievements = [
+    { icon: FaTrophy, title: 'First Quiz Ace', description: 'Score 100% on your first quiz', color: 'bg-yellow-500' },
+    { icon: FaChartLine, title: 'Streak Master', description: 'Maintain a 7-day learning streak', color: 'bg-green-500' },
+    { icon: FaBook, title: 'Chapter Conqueror', description: 'Complete your first chapter', color: 'bg-purple-500' },
+  ];
+
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 sm:p-6">
-      <h2 className="text-2xl font-semibold mb-4">Your Achievements</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div className="flex items-center p-4 bg-yellow-100 dark:bg-yellow-900 rounded-lg">
-          <FaTrophy className="text-3xl text-yellow-500 mr-4" />
-          <div>
-            <h3 className="font-semibold text-gray-800 dark:text-white">First Quiz Ace</h3>
-            <p className="text-sm text-gray-600 dark:text-gray-300">Score 100% on your first quiz</p>
-          </div>
-        </div>
-        <div className="flex items-center p-4 bg-green-100 dark:bg-green-900 rounded-lg">
-          <FaChartLine className="text-3xl text-green-500 mr-4" />
-          <div>
-            <h3 className="font-semibold text-gray-800 dark:text-white">Streak Master</h3>
-            <p className="text-sm text-gray-600 dark:text-gray-300">Maintain a 7-day learning streak</p>
-          </div>
-        </div>
-        <div className="flex items-center p-4 bg-purple-100 dark:bg-purple-900 rounded-lg">
-          <FaBook className="text-3xl text-purple-500 mr-4" />
-          <div>
-            <h3 className="font-semibold text-gray-800 dark:text-white">Chapter Conqueror</h3>
-            <p className="text-sm text-gray-600 dark:text-gray-300">Complete your first chapter</p>
-          </div>
-        </div>
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+      <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-white">Your Achievements</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {achievements.map((achievement, index) => (
+          <motion.div
+            key={index}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: index * 0.1 }}
+            className={`${achievement.color} rounded-lg p-6 text-white`}
+          >
+            <achievement.icon className="text-4xl mb-3" />
+            <h3 className="font-bold text-xl mb-2">{achievement.title}</h3>
+            <p className="text-sm opacity-80">{achievement.description}</p>
+          </motion.div>
+        ))}
       </div>
     </div>
   );
@@ -263,7 +274,6 @@ const Achievements = () => {
 
 const ComingSoonAchievements = comingSoon(Achievements);
 
-  
 const Dashboard = () => {
   const [greeting, setGreeting] = useState('');
   const [isLoading, setIsLoading] = useState(true);
@@ -271,14 +281,12 @@ const Dashboard = () => {
   const { progress, addXP, isLoaded: isProgressLoaded } = useProgress();
   const { learningStats, getCurrentSessionTime, getTotalMinutes, isLoaded: isStatsLoaded } = useLearningStats();
 
-
   useEffect(() => {
     const hour = new Date().getHours();
     if (hour < 12) setGreeting('Good morning');
     else if (hour < 18) setGreeting('Good afternoon');
     else setGreeting('Good evening');
 
-    // Check if all data is loaded
     if (isSignedIn && isUserLoaded && isProgressLoaded && isStatsLoaded) {
       setIsLoading(false);
     }
@@ -286,13 +294,19 @@ const Dashboard = () => {
   
   if (!isSignedIn) {
     return (
-      <div className="min-h-[calc(100vh-64px)] flex items-center justify-center bg-gray-100 dark:bg-gray-900">
-        <div className="text-center">
-          <h2 className="text-2xl font-semibold text-gray-800 dark:text-white mb-4">Please sign up to view your dashboard</h2>
-          <Link href="/signup" className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded transition duration-300">
-            Sign Up
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-500 to-indigo-600">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
+          className="text-center bg-white dark:bg-gray-800 p-8 rounded-lg shadow-2xl"
+        >
+          <h2 className="text-3xl font-bold text-gray-800 dark:text-white mb-6">Welcome to Your Learning Journey</h2>
+          <p className="text-gray-600 dark:text-gray-300 mb-8">Sign up to access your personalized dashboard and start learning today!</p>
+          <Link href="/signup" className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-3 px-6 rounded-full transition duration-300 text-lg">
+            Get Started
           </Link>
-        </div>
+        </motion.div>
       </div>
     );
   }
@@ -300,31 +314,45 @@ const Dashboard = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-indigo-500 mx-auto mb-4"></div>
-          <h2 className="text-xl font-semibold text-gray-800 dark:text-white">Loading your dashboard...</h2>
-        </div>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          className="text-center"
+        >
+          <div className="w-32 h-32 border-t-4 border-b-4 border-indigo-500 rounded-full animate-spin mb-4 mx-auto"></div>
+          <h2 className="text-2xl font-semibold text-gray-800 dark:text-white">Preparing your dashboard...</h2>
+        </motion.div>
       </div>
     );
   }
 
-
-
   return (
-    <div className="min-h-[calc(100vh-64px)] bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-white">
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex flex-col sm:flex-row items-center justify-between mb-8">
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-white">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="flex flex-col sm:flex-row items-center justify-between mb-12"
+        >
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Dashboard</h1>
-            <p className="text-lg text-gray-600 dark:text-gray-300">{greeting}, {user.firstName || 'Student'}!</p>
+            <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">Your Learning Dashboard</h1>
+            <p className="text-xl text-gray-600 dark:text-gray-300">{greeting}, {user.firstName || 'Student'}!</p>
           </div>
-          <Link href="/course" className="mt-4 sm:mt-0 bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded transition duration-300">
-            Go to Course
+          <Link href="/course">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="mt-6 sm:mt-0 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold py-3 px-6 rounded-full transition duration-300 text-lg shadow-lg"
+            >
+              Continue Learning
+            </motion.button>
           </Link>
-        </div>
+        </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2 space-y-8">
             <UserProgress {...progress} />
             <QuoteSection />
           </div>
@@ -333,18 +361,28 @@ const Dashboard = () => {
           </div>
         </div>
 
-        <div className="mt-8">
-          <h2 className="text-2xl font-semibold mb-4">Quick Access Tools</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="mt-12"
+        >
+          <h2 className="text-3xl font-bold mb-6">Quick Access Tools</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {quickAccessTools.map((tool, index) => (
               <QuickAccessTool key={index} {...tool} />
             ))}
           </div>
-        </div>
+        </motion.div>
 
-        <div className="mt-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+          className="mt-12"
+        >
           <ComingSoonAchievements />
-        </div>
+        </motion.div>
       </main>
     </div>
   );
