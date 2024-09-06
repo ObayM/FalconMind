@@ -2,8 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import { storeLessonInFirebase } from '@/components/StoreLesson';
 import { storeQuizData } from '@/components/QuizFirebase';
-
-export default async function Home() {
+import LandingPage from '@/components/LandingPage';
+export default function Home() {
 
   
   // const lessonData = {
@@ -73,7 +73,7 @@ export default async function Home() {
   
   return (
     <>
-      
+      <LandingPage />
     </>
   );
 }
