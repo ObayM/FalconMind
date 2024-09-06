@@ -10,8 +10,6 @@ import { FaSpinner } from 'react-icons/fa';
 
 const courses = [
   { id: 'python', name: 'Python' },
-  { id: 'math', name: 'High School Math' },
-  { id: 'js', name: 'Javascript' },
 ];
 
 const ContinueSignup = () => {

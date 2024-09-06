@@ -119,7 +119,6 @@ const Navbar = () => {
                     <Link href="/poem-creator" className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600">Poem Creator</Link>
                     <Link href="/flashcards" className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600">Flashcards</Link>
                     <Link href="/ai-assistant" className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600">AI Assistant</Link>
-                    <Link href="/collections" className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600">Collections</Link>
                   </div>
                 )}
               </div>
@@ -169,7 +168,6 @@ const Navbar = () => {
                   <Link href="/poem-creator" className="text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 block px-3 py-2 rounded-md text-base font-medium">Poem Creator</Link>
                   <Link href="/flashcards" className="text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 block px-3 py-2 rounded-md text-base font-medium">Flashcards</Link>
                   <Link href="/ai-assistant" className="text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 block px-3 py-2 rounded-md text-base font-medium">AI Assistant</Link>
-                  <Link href="/collections" className="text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 block px-3 py-2 rounded-md text-base font-medium">Collections</Link>
                 </div>
               )}
             </div>
