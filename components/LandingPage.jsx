@@ -37,7 +37,7 @@ const LandingPage = () => {
               whileTap={{ scale: 0.95 }}
               className="bg-white dark:bg-indigo-100 text-indigo-600 dark:text-indigo-800 font-bold text-lg py-4 px-10 rounded-full hover:bg-indigo-100 dark:hover:bg-indigo-200 transition shadow-lg"
             >
-              {isSignedIn ? "Go to Dashboard" : "Embark on Your Learning Journey"}
+              {isSignedIn ? "Go to Dashboard" : "Sign Up Now"}
             </motion.button>
           </Link>
         </motion.div>
@@ -71,7 +71,7 @@ const LandingPage = () => {
             Join Thousands of Learners Transforming Their Skills
           </h2>
           <p className="text-xl text-indigo-100 dark:text-indigo-200 max-w-3xl mx-auto">
-            Don't just learn. Experience a revolutionary approach to skill acquisition. 
+            Don&apos;t just learn. Experience a revolutionary approach to skill acquisition. 
             Our AI-driven platform adapts to your unique learning style, making every 
             session more effective than the last.
           </p>
