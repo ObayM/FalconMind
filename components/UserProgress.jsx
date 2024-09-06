@@ -10,6 +10,7 @@ const ProgressContext = createContext();
 export const UserProgressProvider = ({ children }) => {
   const { user } = useUser();
   const [progress, setProgress] = useState(null);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -58,6 +59,8 @@ export const UserProgressProvider = ({ children }) => {
       }
     } catch (error) {
       console.error('Error initializing or updating progress:', error);
+    } finally {
+      setIsLoaded(true);
     }
   };
 
@@ -112,8 +115,9 @@ export const UserProgressProvider = ({ children }) => {
     }
   };
 
+  
   return (
-    <ProgressContext.Provider value={{ progress, addXP }}>
+    <ProgressContext.Provider value={{ progress, addXP, isLoaded }}>
       {children}
     </ProgressContext.Provider>
   );

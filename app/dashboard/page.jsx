@@ -263,19 +263,49 @@ const Achievements = () => {
 
 const ComingSoonAchievements = comingSoon(Achievements);
 
+  
 const Dashboard = () => {
   const [greeting, setGreeting] = useState('');
-  const { user } = useUser();
-  const { progress, addXP } = useProgress();
-  const { learningStats, getCurrentSessionTime, getTotalMinutes } = useLearningStats();
-
+  const [isLoading, setIsLoading] = useState(true);
+  const { isLoaded: isUserLoaded, isSignedIn, user } = useUser();
+  const { progress, addXP, isLoaded: isProgressLoaded } = useProgress();
+  const { learningStats, getCurrentSessionTime, getTotalMinutes, isLoaded: isStatsLoaded } = useLearningStats();
 
   useEffect(() => {
     const hour = new Date().getHours();
     if (hour < 12) setGreeting('Good morning');
     else if (hour < 18) setGreeting('Good afternoon');
     else setGreeting('Good evening');
-  }, []);
+
+    // Check if all data is loaded
+    if (isUserLoaded && isProgressLoaded && isStatsLoaded) {
+      setIsLoading(false);
+    }
+  }, [isUserLoaded, isProgressLoaded, isStatsLoaded]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-indigo-500 mx-auto mb-4"></div>
+          <h2 className="text-xl font-semibold text-gray-800 dark:text-white">Loading your dashboard...</h2>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isSignedIn) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
+        <div className="text-center">
+          <h2 className="text-2xl font-semibold text-gray-800 dark:text-white mb-4">Please sign in to view your dashboard</h2>
+          <Link href="/sign-in" className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded transition duration-300">
+            Sign In
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-[calc(100vh-64px)] bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-white">
@@ -283,7 +313,7 @@ const Dashboard = () => {
         <div className="flex flex-col sm:flex-row items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Dashboard</h1>
-            <p className="text-lg text-gray-600 dark:text-gray-300">{greeting}, d!</p>
+            <p className="text-lg text-gray-600 dark:text-gray-300">{greeting}, {user.firstName || 'Student'}!</p>
           </div>
           <Link href="/course" className="mt-4 sm:mt-0 bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded transition duration-300">
             Go to Course
@@ -292,7 +322,7 @@ const Dashboard = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2">
-            <UserProgress {...{level: progress.level,xp:  progress.xp,nextLevelXp: progress.nextLevelXp,streakDays:  progress.streakDays }} />
+            <UserProgress {...progress} />
             <QuoteSection />
           </div>
           <div>

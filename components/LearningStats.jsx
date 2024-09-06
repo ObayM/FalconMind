@@ -11,6 +11,7 @@ export const LearningStatsProvider = ({ children }) => {
   const [learningStats, setLearningStats] = useState([]);
   const [isActive, setIsActive] = useState(true);
   const [secondsCount, setSecondsCount] = useState(0);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
     loadStats();
@@ -67,6 +68,7 @@ export const LearningStatsProvider = ({ children }) => {
       setLearningStats(initialStats);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(initialStats));
     }
+    setIsLoaded(true);
   };
 
   const updateMinutes = useCallback((minutes) => {
@@ -91,15 +93,13 @@ export const LearningStatsProvider = ({ children }) => {
   }, [secondsCount]);
 
   return (
-    <LearningStatsContext.Provider 
-      value={{ 
-        learningStats, 
-        updateMinutes, 
-        getTotalMinutes, 
-        getCurrentSessionTime,
-        isActive 
-      }}
-    >
+    <LearningStatsContext.Provider value={{ 
+      learningStats, 
+      updateMinutes, 
+      getTotalMinutes, 
+      getCurrentSessionTime,
+      isLoaded 
+    }}>
       {children}
     </LearningStatsContext.Provider>
   );
