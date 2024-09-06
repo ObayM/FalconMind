@@ -299,7 +299,7 @@ const Dashboard = () => {
       <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
         <div className="text-center">
           <h2 className="text-2xl font-semibold text-gray-800 dark:text-white mb-4">Please sign in to view your dashboard</h2>
-          <Link href="/sign-in" className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded transition duration-300">
+          <Link href="/login" className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded transition duration-300">
             Sign In
           </Link>
         </div>
