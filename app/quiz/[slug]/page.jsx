@@ -2,32 +2,11 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-
-const quizzes = {
-  'python-fundamentals-syntax-and-variables': {
-    title: 'Python Fundamentals: Syntax and Variables',
-    questions: [
-      {
-        id: 1,
-        question: 'What symbol is used for comments in Python?',
-        options: ['/', '//', '#', '/* */'],
-        correctAnswer: 2
-      },
-      {
-        id: 2,
-        question: 'Which of the following is a valid variable name in Python?',
-        options: ['2myVar', 'my-var', 'my_var', 'my var'],
-        correctAnswer: 2
-      },
-      {
-        id: 3,
-        question: 'What is the output of print(type(42))?',
-        options: ['<class \'int\'>', '<class \'float\'>', '<class \'str\'>', '<class \'number\'>'],
-        correctAnswer: 0
-      }
-    ]
-  },
-};
+import { fetchQuizData } from '@/components/QuizFirebase'; 
+import { useUser } from '@clerk/nextjs';
+import { doc, setDoc, getDoc, getFirestore } from 'firebase/firestore';
+import { db } from '@/firebase';
+import { useProgress } from '@/components/UserProgress';
 
 export default function QuizPage({ params }) {
   const { slug } = params;
@@ -39,18 +18,28 @@ export default function QuizPage({ params }) {
   const [userAnswers, setUserAnswers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { user } = useUser();
+  const { progress, addXP } = useProgress();
 
   useEffect(() => {
-    const fetchQuiz = async () => {
+    const fetchQuizAndCheckCompletion = async () => {
       setLoading(true);
       try {
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        const quizData = quizzes[slug];
-        if (quizData) {
-          setQuiz(quizData);
-          setUserAnswers(new Array(quizData.questions.length).fill(null));
-        } else {
-          throw new Error('Quiz not found');
+        const quizData = await fetchQuizData(slug);
+        setQuiz(quizData);
+
+        if (user) {
+          const db = getFirestore();
+          const userQuizDocRef = doc(db, 'users', user.id, 'quizResults', slug);
+          const userQuizDoc = await getDoc(userQuizDocRef);
+
+          if (userQuizDoc.exists()) {
+            setQuizCompleted(true);
+            setScore(userQuizDoc.data().score);
+            setUserAnswers(userQuizDoc.data().results.map(r => r.userAnswer));
+          } else {
+            setUserAnswers(new Array(quizData.questions.length).fill(null));
+          }
         }
       } catch (err) {
         setError(err.message);
@@ -60,11 +49,12 @@ export default function QuizPage({ params }) {
     };
 
     if (slug) {
-      fetchQuiz();
+      fetchQuizAndCheckCompletion();
     }
-  }, [slug]);
+  }, [slug, user]);
 
   const handleAnswerSelect = (answerIndex) => {
+    if (quizCompleted) return;
     setSelectedAnswer(answerIndex);
     const newUserAnswers = [...userAnswers];
     newUserAnswers[currentQuestion] = answerIndex;
@@ -81,6 +71,11 @@ export default function QuizPage({ params }) {
   };
 
   const handleQuizSubmit = async () => {
+    if (!user) {
+      setError('User not authenticated. Please sign in to submit the quiz.');
+      return;
+    }
+
     const results = quiz.questions.map((question, index) => ({
       questionId: question.id,
       userAnswer: userAnswers[index],
@@ -95,16 +90,25 @@ export default function QuizPage({ params }) {
       quizId: slug,
       score: totalScore,
       totalQuestions: quiz.questions.length,
-      results: results
+      results: results,
+      completedAt: new Date().toISOString()
     };
 
     try {
       setLoading(true);
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      console.log('Quiz submission data:', submissionData);
+      const db = getFirestore();
+      const userDocRef = doc(db, 'users', user.id, 'quizResults', slug);
+      await setDoc(userDocRef, submissionData);
+      console.log('Quiz submission data stored in Firebase:', submissionData);
+      
+      // Calculate and add XP based on the score
+      const xpGained = totalScore * 10; // 10 XP per correct answer
+      await addXP(xpGained);
+      
       setQuizCompleted(true);
     } catch (err) {
       setError('Failed to submit quiz. Please try again.');
+      console.error('Error storing quiz results:', err);
     } finally {
       setLoading(false);
     }
@@ -198,9 +202,20 @@ export default function QuizPage({ params }) {
               className="text-center"
             >
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Quiz Completed!</h2>
-              <p className="text-xl text-gray-600 dark:text-gray-400 mb-8">
+              <p className="text-xl text-gray-600 dark:text-gray-400 mb-4">
                 Your score: {score} out of {quiz.questions.length}
               </p>
+              <p className="text-lg text-green-600 dark:text-green-400 mb-8">
+                You earned {score * 10} XP!
+              </p>
+              {progress && (
+                <div className="mb-8 p-4 bg-gray-100 dark:bg-gray-700 rounded-lg">
+                  <p className="text-lg font-semibold text-gray-800 dark:text-gray-200">Current Progress</p>
+                  <p>Level: {progress.level}</p>
+                  <p>XP: {progress.xp} / {progress.nextLevelXp}</p>
+                  <p>Streak: {progress.streakDays} days</p>
+                </div>
+              )}
               <div className="space-y-4">
                 {quiz.questions.map((question, index) => (
                   <div key={question.id} className="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">

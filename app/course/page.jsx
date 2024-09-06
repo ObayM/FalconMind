@@ -1,8 +1,9 @@
 'use client'
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { FaChevronDown, FaChevronUp, FaBook, FaQuestionCircle } from 'react-icons/fa';
-
+import { fetchRoadmap } from '@/components/fetchRaodmap';
+import Spinner from '@/components/spinner'
 const SubskillLink = ({ subskill, moduleName }) => {
   const conceptSlug = `${moduleName.toLowerCase().replace(/\s+/g, '-')}-${subskill.name.toLowerCase().replace(/\s+/g, '-')}`;
   const quizSlug = `quiz/${conceptSlug}`;
@@ -92,67 +93,38 @@ const ProgressBar = ({ progress }) => (
 );
 
 const ResourcesPage = () => {
-  const courseMap = [
-    {
-      "name": "Python Fundamentals",
-      "description": "Master the core concepts of Python before diving into advanced topics",
-      "completed": false,
-      "subskills": [
-          {"name": "Syntax and Variables", "completed": true},
-          {"name": "Data Types", "completed": false},
-          {"name": "Control Flow (if, else, loops)", "completed": false},
-          {"name": "Functions", "completed": false},
-          {"name": "Modules and Packages", "completed": false}
-      ]
-  },
-  {
-      "name": "Advanced Python",
-      "description": "Dive into more complex Python concepts",
-      "completed": false,
-      "subskills": [
-          {"name": "Object-Oriented Programming", "completed": false},
-          {"name": "File Handling", "completed": false},
-          {"name": "Error Handling", "completed": false},
-          {"name": "Iterators and Generators", "completed": false},
-          {"name": "Decorators", "completed": false}
-      ]
-  },
-  {
-      "name": "Python for Data Science",
-      "description": "Apply Python to data science tasks and libraries",
-      "completed": false,
-      "subskills": [
-          {"name": "NumPy", "completed": false},
-          {"name": "Pandas", "completed": false},
-          {"name": "Matplotlib and Seaborn", "completed": false},
-          {"name": "Scikit-learn", "completed": false},
-          {"name": "Data Cleaning and Preprocessing", "completed": false}
-      ]
-  },
-  {
-      "name": "Web Development with Python",
-      "description": "Learn how to use Python for web development",
-      "completed": false,
-      "subskills": [
-          {"name": "Flask Basics", "completed": false},
-          {"name": "Django Basics", "completed": false},
-          {"name": "APIs with Flask and Django", "completed": false},
-          {"name": "Templating with Jinja2", "completed": false},
-          {"name": "Database Integration", "completed": false}
-      ]
-  },
-  {
-      "name": "Python Automation",
-      "description": "Automate tasks using Python scripts",
-      "completed": false,
-      "subskills": [
-          {"name": "Working with Files and Directories", "completed": false},
-          {"name": "Web Scraping with BeautifulSoup", "completed": false},
-          {"name": "Task Scheduling", "completed": false},
-          {"name": "Automating Emails and Reports", "completed": false},
-          {"name": "Interacting with APIs", "completed": false}
-      ]
-  }]
+  const [courseMap, setCourseMap] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchRoadmapData = async () => {
+      try {
+        setIsLoading(true);
+        const roadmap = await fetchRoadmap("Python Roadmap");
+        if (roadmap && roadmap.data) {
+          setCourseMap(roadmap.data);
+        } else {
+          setError("Roadmap data not found");
+        }
+      } catch (error) {
+        console.error("Failed to fetch roadmap:", error);
+        setError("Failed to fetch roadmap data");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchRoadmapData();
+  }, []);
+
+  if (isLoading) {
+    return <Spinner />;
+  }
+
+  if (error) {
+    return <div className="text-center py-12 text-red-500">{error}</div>;
+  }
   const totalSubskills = courseMap.reduce((acc, module) => acc + module.subskills.length, 0);
   const completedSubskills = courseMap.reduce((acc, module) => 
     acc + module.subskills.filter(subskill => subskill.completed).length, 0

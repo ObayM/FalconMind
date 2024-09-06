@@ -4,46 +4,7 @@ import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { tomorrow } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { useState, useEffect } from 'react';
-
-const mockConcepts = {
-  'python-fundamentals-syntax-and-variables': {
-    title: 'Syntax and Variables In Python',
-    content: `
-Python is a high-level programming language renowned for its simplicity and readability. Understanding its syntax and variables is fundamental for anyone starting out with Python.
-
-## Basic Syntax
-
-Python uses indentation to define code blocks. Here's a simple example:
-
-\`\`\`python
-if True:
-    print("This is indented")
-print("This is not indented")
-\`\`\`
-
-## Variables
-
-Variables in Python are created when you assign a value to them:
-
-\`\`\`python
-x = 5
-y = "Hello, World!"
-\`\`\`
-
-Python is dynamically typed, which means you don't need to declare the type of a variable.
-    `,
-    resources: [
-      {
-        title: 'Python Documentation',
-        url: 'https://docs.python.org/3/',
-      },
-      {
-        title: 'Python Tutorial',
-        url: 'https://youtu.be/4WVZBtqqVM4?si=k29TAj-2ub3uMtdT',
-      },
-    ]
-  },
-};
+import { fetchLessonFromFirebase } from '@/components/fetchLesson';
 
 const CodeBlock = ({ language, value }) => {
   return (
@@ -55,19 +16,37 @@ const CodeBlock = ({ language, value }) => {
 
 export default function ConceptPage({ params }) {
   const { article } = params;
-  const concept = mockConcepts[article];
-  const [mounted, setMounted] = useState(false);
+  const [lesson, setLesson] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
+    const fetchLesson = async () => {
+      try {
+        setIsLoading(true);
+        const fetchedLesson = await fetchLessonFromFirebase(article);
+        if (fetchedLesson) {
+          setLesson(fetchedLesson);
+        } else {
+          setError("Lesson not found");
+        }
+      } catch (error) {
+        console.error("Failed to fetch lesson:", error);
+        setError("Failed to fetch lesson data");
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-  if (!concept) {
-    notFound();
+    fetchLesson();
+  }, [article]);
+
+  if (isLoading) {
+    return <div className="text-center py-12">Loading...</div>;
   }
 
-  if (!mounted) {
-    return null;
+  if (error || !lesson) {
+    return notFound();
   }
 
   return (
@@ -76,7 +55,7 @@ export default function ConceptPage({ params }) {
         <div className="max-w-4xl mx-auto">
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
             <div className="p-4 sm:p-6 md:p-8">
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-6">{concept.title}</h1>
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-6">{lesson.title}</h1>
               <div className="prose dark:prose-invert max-w-none text-sm sm:text-base">
                 <ReactMarkdown
                   components={{
@@ -96,47 +75,49 @@ export default function ConceptPage({ params }) {
                     }
                   }}
                 >
-                  {concept.content}
+                  {lesson.content}
                 </ReactMarkdown>
               </div>
             </div>
           </div>
           
-          <div className="mt-8 bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
-            <div className="p-4 sm:p-6 md:p-8">
-              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">Resources</h2>
-              <ul className="space-y-4">
-                {concept.resources.map((resource, index) => (
-                  <li key={index}>
-                    {resource.url.includes('youtu.be') || resource.url.includes('youtube.com') ? (
-                      <div>
-                        <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">{resource.title}</h3>
-                        <div className="aspect-w-16 aspect-h-9">
-                          <iframe
-                            src={`https://www.youtube.com/embed/${resource.url.split('/').pop()}`}
-                            frameBorder="0"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowFullScreen
-                            className="w-full h-full rounded-md"
-                          ></iframe>
+          {lesson.resources && lesson.resources.length > 0 && (
+            <div className="mt-8 bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
+              <div className="p-4 sm:p-6 md:p-8">
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">Resources</h2>
+                <ul className="space-y-4">
+                  {lesson.resources.map((resource, index) => (
+                    <li key={index}>
+                      {resource.url.includes('youtu.be') || resource.url.includes('youtube.com') ? (
+                        <div>
+                          <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">{resource.title}</h3>
+                          <div className="aspect-w-16 aspect-h-9">
+                            <iframe
+                              src={`https://www.youtube.com/embed/${resource.url.split('/').pop()}`}
+                              frameBorder="0"
+                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                              allowFullScreen
+                              className="w-full h-full rounded-md"
+                            ></iframe>
+                          </div>
                         </div>
-                      </div>
-                    ) : (
-                      <a
-                        href={resource.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="block p-4 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition duration-150 ease-in-out"
-                      >
-                        <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200">{resource.title}</h3>
-                        <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">{resource.url}</p>
-                      </a>
-                    )}
-                  </li>
-                ))}
-              </ul>
+                      ) : (
+                        <a
+                          href={resource.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="block p-4 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition duration-150 ease-in-out"
+                        >
+                          <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200">{resource.title}</h3>
+                          <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">{resource.url}</p>
+                        </a>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </main>
     </div>
