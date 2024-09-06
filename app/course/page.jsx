@@ -5,6 +5,7 @@ import { FaChevronDown, FaChevronUp, FaBook, FaQuestionCircle } from 'react-icon
 import { fetchRoadmap } from '@/components/fetchRaodmap';
 import Spinner from '@/components/spinner'
 import { useUser } from '@clerk/nextjs';
+import { motion } from 'framer-motion';
 
 const SubskillLink = ({ subskill, moduleName }) => {
   const conceptSlug = `${moduleName.toLowerCase().replace(/\s+/g, '-')}-${subskill.name.toLowerCase().replace(/\s+/g, '-')}`;
