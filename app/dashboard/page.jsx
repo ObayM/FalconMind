@@ -270,6 +270,19 @@ const Dashboard = () => {
   const { isLoaded: isUserLoaded, isSignedIn, user } = useUser();
   const { progress, addXP, isLoaded: isProgressLoaded } = useProgress();
   const { learningStats, getCurrentSessionTime, getTotalMinutes, isLoaded: isStatsLoaded } = useLearningStats();
+  
+  if (!isSignedIn) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
+        <div className="text-center">
+          <h2 className="text-2xl font-semibold text-gray-800 dark:text-white mb-4">Please sign in to view your dashboard</h2>
+          <Link href="/login" className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded transition duration-300">
+            Sign In
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   useEffect(() => {
     const hour = new Date().getHours();
@@ -294,18 +307,7 @@ const Dashboard = () => {
     );
   }
 
-  if (!isSignedIn) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
-        <div className="text-center">
-          <h2 className="text-2xl font-semibold text-gray-800 dark:text-white mb-4">Please sign in to view your dashboard</h2>
-          <Link href="/login" className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded transition duration-300">
-            Sign In
-          </Link>
-        </div>
-      </div>
-    );
-  }
+
 
   return (
     <div className="min-h-[calc(100vh-64px)] bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-white">
