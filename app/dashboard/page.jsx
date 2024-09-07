@@ -1,7 +1,7 @@
 'use client'
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { FaBook, FaRobot, FaFeather, FaQuoteLeft, FaComments, FaChartLine, FaTrophy, FaFireAlt, FaClock } from 'react-icons/fa';
+import { FaBook, FaRobot, FaBrain, FaFeather, FaQuoteLeft, FaComments, FaChartLine, FaTrophy, FaFireAlt, FaClock } from 'react-icons/fa';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { useUser } from '@clerk/nextjs';
 import { useProgress } from '@/components/UserProgress';
@@ -113,6 +113,7 @@ const quickAccessTools = [
   { name: 'AI Flashcards', icon: FaRobot, href: '/flashcards', color: 'bg-blue-500' },
   { name: 'Poem Generator', icon: FaFeather, href: '/poem-creator', color: 'bg-purple-500' },
   { name: 'AI Assistant', icon: FaComments, href: '/ai-assistant', color: 'bg-green-500' },
+  {name: 'Mnemonic Generator', icon: FaBrain, href: '/mnemonic', color: 'bg-indigo-500' },
 ];
 
 const comingSoon = (WrappedComponent) => {
