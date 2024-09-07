@@ -12,23 +12,25 @@ const SubskillLink = ({ subskill, moduleName }) => {
   const quizSlug = `quiz/${conceptSlug}`;
   
   return (
-    <div className="flex items-center justify-between p-4 rounded-lg transition-all duration-300 hover:bg-indigo-100 dark:hover:bg-indigo-900 group">
-      <Link href={`/concept/${conceptSlug}`} className="flex-grow">
-        <div className="flex items-center">
-          <span className={`w-4 h-4 rounded-full mr-4 transition-colors duration-300 ${
-            subskill.completed ? 'bg-green-500' : 'bg-gray-300 dark:bg-gray-600 group-hover:bg-indigo-500'
-          }`}></span>
-          <span className="text-sm md:text-base text-gray-700 dark:text-gray-300 group-hover:text-indigo-700 dark:group-hover:text-indigo-300 transition-colors duration-300 font-medium">
-            {subskill.name}
-          </span>
-        </div>
+    <div className="flex items-center justify-between p-3 rounded-lg transition-all duration-300 hover:bg-indigo-50 dark:hover:bg-indigo-900 border border-transparent hover:border-indigo-200 dark:hover:border-indigo-700">
+      <Link 
+        href={`/concept/${conceptSlug}`}
+        className="flex items-center flex-grow"
+      >
+        <span className={`w-3 h-3 rounded-full mr-3 transition-colors duration-300 ${
+          subskill.completed ? 'bg-green-500' : 'bg-gray-300 dark:bg-gray-600'
+        }`}></span>
+        <span className="text-sm md:text-base text-gray-700 dark:text-gray-300 transition-colors duration-300 font-medium">
+          {subskill.name}
+        </span>
       </Link>
       <Link 
         href={quizSlug}
-        className="ml-2 p-2 text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-200 transition-colors duration-300 rounded-full hover:bg-indigo-200 dark:hover:bg-indigo-800"
+        className="ml-2 px-3 py-1 bg-indigo-100 dark:bg-indigo-800 text-indigo-600 dark:text-indigo-300 rounded-full flex items-center transition-all duration-300 hover:bg-indigo-200 dark:hover:bg-indigo-700 hover:shadow-md"
         title={`Take quiz for ${subskill.name}`}
       >
-        <FaQuestionCircle size={20} />
+        <FaQuestionCircle size={16} className="mr-1" />
+        <span className="text-xs font-medium">Quiz</span>
       </Link>
     </div>
   );
