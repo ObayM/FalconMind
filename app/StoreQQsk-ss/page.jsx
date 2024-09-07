@@ -1,6 +1,6 @@
 'use client'
 import React, { useState } from 'react';
-import { storeQuizData } from '@/components/QuizFirebase'; // Adjust the import path as needed
+import { storeQuizData } from '@/components/QuizFirebase'; 
 
 export default function QuizSubmissionPage() {
   const [quizName, setQuizName] = useState('');
@@ -20,15 +20,9 @@ export default function QuizSubmissionPage() {
     }
 
     try {
-      // Parse the JSON input
       const quizData = JSON.parse(jsonInput);
-      
-      // Generate a slug from the quiz name
       const slug = quizName.toLowerCase().replace(/\s+/g, '-');
-      
-      // Call the function to store the quiz data
       await storeQuizData(slug, quizData);
-      
       setMessage(`Quiz "${quizName}" successfully stored with slug: ${slug}`);
       setQuizName('');
       setJsonInput('');
@@ -40,65 +34,47 @@ export default function QuizSubmissionPage() {
   };
 
   return (
-    <div style={{ maxWidth: '600px', margin: '0 auto', padding: '20px' }}>
-      <h1 style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '16px' }}>Submit Quiz</h1>
-      <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: '16px' }}>
-          <label htmlFor="quizName" style={{ display: 'block', marginBottom: '8px' }}>Quiz Name:</label>
+    <div className="max-w-2xl mx-auto p-6 bg-white shadow-lg rounded-lg">
+      <h1 className="text-3xl font-bold mb-6 text-gray-800">Submit Quiz</h1>
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div>
+          <label htmlFor="quizName" className="block text-sm font-medium text-gray-700 mb-2">
+            Quiz Name
+          </label>
           <input
             id="quizName"
             type="text"
             value={quizName}
             onChange={(e) => setQuizName(e.target.value)}
-            style={{
-              width: '100%',
-              padding: '8px',
-              border: '1px solid #ccc',
-              borderRadius: '4px'
-            }}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             required
           />
         </div>
-        <div style={{ marginBottom: '16px' }}>
-          <label htmlFor="jsonInput" style={{ display: 'block', marginBottom: '8px' }}>Quiz Data (JSON):</label>
+        <div>
+          <label htmlFor="jsonInput" className="block text-sm font-medium text-gray-700 mb-2">
+            Quiz Data (JSON)
+          </label>
           <textarea
             id="jsonInput"
             value={jsonInput}
             onChange={(e) => setJsonInput(e.target.value)}
             placeholder="Enter quiz data in JSON format"
-            style={{
-              width: '100%',
-              height: '200px',
-              padding: '8px',
-              border: '1px solid #ccc',
-              borderRadius: '4px'
-            }}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 h-48"
             required
           />
         </div>
         <button
           type="submit"
-          style={{
-            backgroundColor: '#007bff',
-            color: 'white',
-            padding: '10px 15px',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer'
-          }}
+          className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-150 ease-in-out"
         >
           Submit Quiz
         </button>
       </form>
       {message && (
         <div
-          style={{
-            marginTop: '16px',
-            padding: '12px',
-            borderRadius: '4px',
-            backgroundColor: isError ? '#f8d7da' : '#d4edda',
-            color: isError ? '#721c24' : '#155724'
-          }}
+          className={`mt-6 p-4 rounded-md ${
+            isError ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'
+          }`}
         >
           {message}
         </div>

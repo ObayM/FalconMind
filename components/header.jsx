@@ -115,7 +115,7 @@ const Navbar = () => {
                   <FaCaretDown className="ml-1 h-4 w-4" />
                 </button>
                 {isToolsDropdownOpen && (
-                  <div className="absolute left-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white dark:bg-gray-700 ring-1 ring-black ring-opacity-5 focus:outline-none">
+                  <div className="absolute z-10 left-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white dark:bg-gray-700 ring-1 ring-black ring-opacity-5 focus:outline-none">
                     <Link href="/poem-creator" className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600">Poem Creator</Link>
                     <Link href="/flashcards" className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600">Flashcards</Link>
                     <Link href="/ai-assistant" className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600">AI Assistant</Link>
