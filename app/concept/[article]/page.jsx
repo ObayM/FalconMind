@@ -5,6 +5,8 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { tomorrow } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { useState, useEffect } from 'react';
 import { fetchLessonFromFirebase } from '@/components/fetchLesson';
+import Link from 'next/link';
+import { ArrowLeft } from 'lucide-react';
 
 const CodeBlock = ({ language, value }) => {
   return (
@@ -53,6 +55,11 @@ export default function ConceptPage({ params }) {
     <div className="min-h-[calc(100vh-64px)] bg-gray-100 dark:bg-gray-900 flex flex-col">
       <main className="flex-grow p-4 sm:p-6 lg:p-8">
         <div className="max-w-4xl mx-auto">
+          <Link href="/course" className="inline-flex items-center mb-6 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-300 ease-in-out shadow-md">
+            <ArrowLeft className="w-5 h-5 mr-2" />
+            Back to Course
+          </Link>
+          
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
             <div className="p-4 sm:p-6 md:p-8">
               <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-6">{lesson.title}</h1>
