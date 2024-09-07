@@ -108,7 +108,7 @@ export default function Home() {
                   message.role === 'user' ? 'bg-indigo-500 text-white' : 'bg-gray-100 dark:bg-gray-700 dark:text-gray-100'
                 }`}
               >
-                <div className="prose dark:prose-invert max-w-none break-words whitespace-pre-wrap" dir="auto">
+                <div className="prose dark:prose-invert max-w-none " dir="auto">
                   <ReactMarkdown>{message.text}</ReactMarkdown>
                 </div>
               </div>

@@ -1,6 +1,6 @@
 'use client'
 import React from 'react';
-import { useUser, UserButton  } from '@clerk/nextjs';
+import { useUser, UserButton } from '@clerk/nextjs';
 import { FiUser, FiMail, FiBriefcase, FiMapPin } from 'react-icons/fi';
 
 const ProfileCard = ({ icon: Icon, label, value }) => (
@@ -25,18 +25,21 @@ const ProfilePage = () => {
       <div className="max-w-4xl mx-auto">
         <div className="bg-white dark:bg-gray-800 shadow-xl rounded-2xl overflow-hidden">
           <div className="relative h-48 bg-indigo-600">
-
-            <div className="flex justify-center absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 h-32 w-32 rounded-full border-4 border-white dark:border-gray-800 shadow-lg">
-              <UserButton   appearance={{
-                            elements: {
-                              userButtonAvatarBox: {
-                                width: '8rem',
-                                height: '8rem',
-                              },
-                            },
-                          }}/>
+            <div className="flex justify-center absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2">
+              <div className="relative">
+                <UserButton appearance={{
+                  elements: {
+                    userButtonAvatarBox: {
+                      width: '8rem',
+                      height: '8rem',
+                    },
+                  },
+                }}/>
+                <div className="absolute -right-28 top-0 transform -translate-y-1/2 bg-indigo-500 text-white px-3 py-1 rounded-full text-xs font-medium shadow-lg">
+                  Click on the photo
+                </div>
+              </div>
             </div>
-
           </div>
           <div className="pt-16 pb-8 px-6 text-center">
             <h2 className="text-3xl font-bold text-gray-900 dark:text-white">{user.fullName}</h2>
