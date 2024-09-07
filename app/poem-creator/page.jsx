@@ -1,152 +1,162 @@
-'use client';
-import React, { useState } from 'react';
+'use client'
+import React, { useState, useEffect } from 'react';
+import { useUser } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
+import { Loader2, Copy, Check, Zap } from 'lucide-react';
+import { motion, AnimatePresence } from "framer-motion";
+import confetti from 'canvas-confetti';
+import ReactMarkdown from 'react-markdown';
 
 export default function PoemGenerator() {
-    const [numLines, setNumLines] = useState(4);
-    const [poemType, setPoemType] = useState('Haiku');
-    const [rhymeScheme, setRhymeScheme] = useState('ABAB');
-    const [theme, setTheme] = useState('');
-    const [tone, setTone] = useState('Serene');
+    const { isLoaded, isSignedIn, user } = useUser();
     const [poem, setPoem] = useState('');
+    const [text, setText] = useState('');
+    const [name, setName] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
+    const [copied, setCopied] = useState(false);
+    const router = useRouter();
 
-    const generatePoem = async () => {
-        if (theme.trim() === '') {
-            alert("Please enter a theme before generating the poem.");
+    useEffect(() => {
+        if (isLoaded && !isSignedIn) {
+            router.push('/signup');
+        }
+    }, [isLoaded, isSignedIn, router]);
+
+    const handleSubmit = async () => {
+        if (!text.trim()) {
+            setError('Please enter some text to generate a poem.');
             return;
         }
-
+        setError('');
+        setLoading(true);
         try {
-            const response = await fetch('/api/poem', {
+            const res = await fetch('/api/poem', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({
-                    numLines,
-                    poemType,
-                    rhymeScheme,
-                    theme,
-                    tone,
-                }),
+                body: JSON.stringify({ text }),
             });
-
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
+            if (!res.ok) {
+                throw new Error('Failed to generate poem');
             }
-
-            const data = await response.json();
-            setPoem(data.text || 'No poem generated');
+            const data = await res.json();
+            setPoem(data.poem);
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
         } catch (error) {
-            console.error('Error generating poem:', error);
-            alert('Failed to generate poem.');
+            console.error("Error generating poem:", error);
+            setError('An error occurred while generating the poem. Please try again.');
+        } finally {
+            setLoading(false);
         }
     };
 
+    const handleKeyPress = (event) => {
+        if (event.key === 'Enter' && event.ctrlKey) {
+            event.preventDefault();
+            handleSubmit();
+        }
+    };
+
+
+    const copyToClipboard = () => {
+        navigator.clipboard.writeText(poem).then(() => {
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+        });
+    };
+
     return (
-        <div className="min-h-[calc(100vh-64px)] bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-gray-800 dark:to-gray-900 py-4 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
-            <div className="w-full max-w-4xl mx-auto bg-white dark:bg-gray-800 shadow-lg rounded-xl overflow-hidden flex flex-col p-8">
-                <div className="mb-6">
-                    <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 text-center">
-                        Poem Generator
-                    </h2>
-                </div>
+        <div style={{ minHeight: 'calc(100vh - 64px)' }} className="bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-800">
+            <div className="container mx-auto px-4 py-16">
+                <motion.h1 
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5 }}
+                    className="text-5xl font-bold text-center text-blue-800 dark:text-blue-300 mb-8"
+                >
+                    Generate Poem
+                </motion.h1>
+                <motion.div 
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.5 }}
+                    className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-8"
+                >
+                    <textarea
+                        value={text}
+                        onChange={(e) => setText(e.target.value)}
+                        placeholder="Enter your text here... (Press Ctrl+Enter to generate)"
+                        className="w-full h-40 p-4 border border-blue-300 dark:border-blue-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent resize-none bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                        onKeyPress={handleKeyPress}
+                    />
+                    <motion.button
+                        onClick={handleSubmit}
+                        disabled={loading}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="mt-4 w-full bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-lg transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        {loading ? (
+                            <Loader2 className="animate-spin mx-auto h-6 w-6" />
+                        ) : (
+                            <span className="flex items-center justify-center">
+                                <Zap className="mr-2 h-5 w-5" />
+                                Generate Poem
+                            </span>
+                        )}
+                    </motion.button>
+                    {error && (
+                        <p className="mt-2 text-red-500 dark:text-red-400 text-sm">{error}</p>
+                    )}
+                </motion.div>
 
-                <div className="flex flex-col space-y-4">
-                    {/* Number of Lines */}
-                    <div className="flex justify-between items-center">
-                        <label className="text-gray-900 dark:text-gray-100">Number of Lines:</label>
-                        <input
-                            type="number"
-                            value={numLines}
-                            onChange={(e) => setNumLines(Number(e.target.value))}
-                            className="w-20 p-2 border rounded"
-                            min="1"
-                            max="20"
-                        />
-                    </div>
-
-                    {/* Type of Poem */}
-                    <div className="flex justify-between items-center">
-                        <label className="text-gray-900 dark:text-gray-100">Type of Poem:</label>
-                        <select
-                            value={poemType}
-                            onChange={(e) => setPoemType(e.target.value)}
-                            className="w-40 p-2 border rounded"
+                <AnimatePresence>
+                    {poem && !loading && (
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -20 }}
+                            className="mt-12"
                         >
-                            <option value="General">General</option>
-                            <option value="Sonnet">Sonnet</option>
-                            <option value="FreeVerse">Free Verse</option>
-                            <option value="Limerick">Limerick</option>
-                            <option value="Haiku">Haiku</option>
-                            <option value="Acrostic">Acrostic</option>
-                            <option value="Villanelle">Villanelle</option>
-                            <option value="Elegy">Elegy</option>
-                        </select>
-                    </div>
+                            <h2 className="text-3xl font-semibold text-center text-blue-800 dark:text-blue-300 mb-6 pb-2 border-b-2 border-blue-200 dark:border-blue-700">
+                                Your Generated Poem
+                            </h2>
+                            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-8">
+                                <p className="text-gray-800 dark:text-gray-200 text-lg whitespace-pre-wrap">
+                                    <ReactMarkdown>{poem}</ReactMarkdown>
+                                </p>
+                            </div>
+                            <div className="mt-8 flex flex-wrap justify-center space-x-4">
+                                <motion.button
+                                    onClick={copyToClipboard}
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                    className="mb-4 bg-purple-500 dark:bg-purple-600 hover:bg-purple-600 dark:hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:ring-opacity-50 flex items-center"
+                                >
+                                    {copied ? (
+                                        <>
+                                            <Check className="mr-2 h-5 w-5" />
+                                            Copied!
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Copy className="mr-2 h-5 w-5" />
+                                            Copy Poem
+                                        </>
+                                    )}
+                                </motion.button>
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
 
-                    {/* Rhyming Scheme */}
-                    <div className="flex justify-between items-center">
-                        <label className="text-gray-900 dark:text-gray-100">Rhyme Scheme:</label>
-                        <select
-                            value={rhymeScheme}
-                            onChange={(e) => setRhymeScheme(e.target.value)}
-                            className="w-40 p-2 border rounded"
-                        >
-                            <option value="ABAB">ABAB</option>
-                            <option value="AABB">AABB</option>
-                            <option value="ABBA">ABBA</option>
-                            <option value="Free">Free</option>
-                        </select>
-                    </div>
-
-                    {/* Theme */}
-                    <div className="flex justify-between items-center">
-                        <label className="text-gray-900 dark:text-gray-100">Theme:</label>
-                        <input
-                            type="text"
-                            value={theme}
-                            onChange={(e) => setTheme(e.target.value)}
-                            className="w-40 p-2 border rounded"
-                            placeholder="Enter your theme"
-                        />
-                    </div>
-
-                    {/* Tone */}
-                    <div className="flex justify-between items-center">
-                        <label className="text-gray-900 dark:text-gray-100">Tone:</label>
-                        <select
-                            value={tone}
-                            onChange={(e) => setTone(e.target.value)}
-                            className="w-40 p-2 border rounded"
-                        >
-                            <option value="Serene">Serene</option>
-                            <option value="Melancholic">Melancholic</option>
-                            <option value="Joyful">Joyful</option>
-                            <option value="Dramatic">Dramatic</option>
-                        </select>
-                    </div>
-
-                    {/* Generate Button */}
-                    <div className="flex justify-center mt-6">
-                        <button
-                            onClick={generatePoem}
-                            disabled={theme.trim() === ''}
-                            className={`px-6 py-2 rounded-lg shadow-md ${theme.trim() === '' ? 'bg-gray-400 cursor-not-allowed' : 'bg-purple-600 hover:bg-purple-700 text-white'}`}
-                        >
-                            Generate Poem
-                        </button>
-                    </div>
-
-                    {/* Display Generated Poem */}
-                    <div className="mb-6">
-                        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 text-center">
-                            Generated Poem
-                        </h2>
-                    </div>
-                    <div className="flex-grow mt-6 p-4 bg-gray-100 dark:bg-gray-700 rounded-lg border border-gray-300 dark:border-gray-600 overflow-auto">
-                        <p className="text-gray-900 dark:text-gray-100 whitespace-pre-wrap">{poem}</p>
-                    </div>
-                </div>
+                
             </div>
         </div>
     );
