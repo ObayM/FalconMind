@@ -23,19 +23,19 @@ FalconMind is an AI-powered learning platform that offers personalized content, 
 ## Getting Started
 
 1. Clone the repository:
-   \`\`\`bash
+   ```bash
    git clone https://github.com/ObayM/FalconMind.git
    cd FalconMind
-   \`\`\`
+   ```
 
 2. Install dependencies:
-   \`\`\`bash
+   ```bash
    npm install
-   \`\`\`
+   ```
 
 3. Set up environment variables:
    Create a `.env.local` file in the root directory and add the following:
-   \`\`\`
+   ```
       NEXT_PUBLIC_FIREBASE_API_KEY=your_firebase_api_key
       NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_firebase_auth_domain
       NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_firebase_project_id
@@ -44,14 +44,16 @@ FalconMind is an AI-powered learning platform that offers personalized content, 
       NEXT_PUBLIC_FIREBASE_APP_ID=your_firebase_app_id
       NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=your_firebase_measurement_id
       NEXT_PUBLIC_GEMINI_API_KEY_MN=your_gemini_api_key NEXT_PUBLIC_OPENROUTER_API_KEY=your_openrouter_api_key
-   \`\`\`
+   ```
 
 
 5. Run the development server:
-bash npm run dev
+```bash
+npm run dev
+```
 
 
-6. Open [http://localhost:3000](http://localhost:3000) in your browser.
+7. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## Project Structure
 
